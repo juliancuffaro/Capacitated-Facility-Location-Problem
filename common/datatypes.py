@@ -2,7 +2,7 @@ import pandas as pd
 import math
 
 EARTH_RADIUS = 6371 #km
-CIRCUITY = 1.0 #1.3 #assumed circuity factor
+CIRCUITY = 1.3 #assumed circuity factor
 
 
 #locations must be given in the form (lat, long)
