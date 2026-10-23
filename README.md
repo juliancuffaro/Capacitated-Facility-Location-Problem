@@ -1,5 +1,5 @@
 # Capacitated-Facility-Location-Problem
-The CFLP is an optimization problem involving distribution center design. Given a set of proposed production plants, distribution centers (facilities), customer zones, and commodities, the goal is to minimize total cost by selecting which distribution centers to open, what customer zones they should serve, and the amount of each commodity to transport from production plant to distribution center, then to customer zone. Below is a diagram summarizing the transportation layout.
+The CFLP is an optimization problem involving distribution center design. Given a set of proposed production plants, distribution centers (facilities), customer zones, and commodities, the goal is to minimize total cost by selecting which distribution centers to open, what customer zones they should serve, and the amount of each commodity to transport from production plant to distribution center, then to customer zone. There are two components to this project: optimization of the model using the given data, and a parametric analysis on commodity rates, which re-scales commodity rates and re-solves the model. Below is a diagram summarizing the transportation layout.
 
 <img width="409" height="377" alt="CFLP_Layout2" src="https://github.com/user-attachments/assets/fd5e9110-9b28-46fb-a396-f61096bd1e83" />
 
@@ -36,7 +36,7 @@ The CFLP is an optimization problem involving distribution center design. Given 
 
 ### Project layout
 ```
-common/              shared data classes and distance functions
+common/              shared data classes distance functions, and constants
 CFLP_Single/         single solve
 CFLP_Sensitivity/    parametric analysis on commodity rates
 CSVs/                input data
@@ -72,14 +72,9 @@ Distance settings are constants near the top of the code:
 - `CIRCUITY`: 1.3 multiplier applied to straight-line distance to approximate road distance
 - `EARTH_RADIUS`: 6371 km (haversine distance)
 
-
-## Repository Format
-
-There are two components to this project: optimization of the model using the given data, and a parametric analysis on commodity rates, which optimizes the model for the given commodity rates, and for re-scaled commodity rates with scale decided by the user. In either case, inputs are taken from four CSV files, each detailing a different portion of the data required (commodities, production plants, distribution centers, and customer zones). The commodity rates CSV is parsed into a one-dimensional array for simplicity, and the remaining three are parsed into corresponding data-types that are defined in `common/datatypes.py`. The Python library Pandas is used for all data parsing and wrangling. Optimization is done using Pyomo and the 'highs' solver for the single optimization, and 'appsi_highs' for the sensitivity analysis, as it allows for mutability of commodity rates.
-
 ## Model and constraints
 
-We'll now give an explicit mathematical formulation for the problem: variables, constraints, and objective function.
+We'll now give an explicit mathematical formulation for the problem.
 
 ### Variables
 
