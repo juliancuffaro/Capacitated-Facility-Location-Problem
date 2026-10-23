@@ -69,7 +69,7 @@ Output is written to the `Output/` folder:
 
 Distance settings are constants near the top of the code:
 
-- `CIRCUITY`: 1.0 multiplier applied to straight-line distance to approximate road distance
+- `CIRCUITY`: 1.3 multiplier applied to straight-line distance to approximate road distance
 - `EARTH_RADIUS`: 6371 km (haversine distance)
 
 
