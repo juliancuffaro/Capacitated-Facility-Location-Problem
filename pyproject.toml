@@ -1,0 +1,8 @@
+[project]
+name = "cflp"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["pyomo", "highspy", "pandas"]
+
+[tool.setuptools]
+packages = ["common", "CFLP_Single", "CFLP_Sensitivity"]
