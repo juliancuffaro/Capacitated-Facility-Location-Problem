@@ -24,6 +24,7 @@ The CFLP is an optimization problem involving distribution center design. Given 
 ```
    On Windows, if activation is blocked, run
    `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once.
+   
 3. Install the project in editable mode:
 ```
    pip install -e .
