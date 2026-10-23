@@ -6,16 +6,6 @@ The CFLP is an optimization problem involving distribution center design. Given 
 ## Requirements and Setup
 
 ### Requirements
-
-- Python 3.12 or newer (developed and tested on Python 3.14)
-- The packages listed in `requirements.txt`:
-  - [Pyomo](https://www.pyomo.org/): builds the optimization model
-  - [HiGHS](https://highs.dev/) (via `highspy`): solves the mixed-integer program
-  - [pandas](https://pandas.pydata.org/): reads CSVs and wrangles data
-
-### Installation
-
-### Requirements
 - Python 3.12 or newer (tested on Python 3.14)
 - Dependencies are declared in `pyproject.toml` and installed automatically:
   Pyomo, HiGHS (`highspy`), pandas
@@ -52,7 +42,6 @@ CFLP_Sensitivity/    parametric analysis on commodity rates
 CSVs/                input data
 Output/              results
 ```
-   This should print `True`.
 
 ### Input data
 
@@ -80,14 +69,13 @@ Output is written to the `Output/` folder:
 
 Distance settings are constants near the top of the code:
 
-- `CIRCUITY`: multiplier applied to straight-line distance to approximate road distance
+- `CIRCUITY`: 1.0 multiplier applied to straight-line distance to approximate road distance
 - `EARTH_RADIUS`: 6371 km (haversine distance)
 
 
 ## Repository Format
 
-There are two components to this project: optimization of the model using the given data, and a parametric analysis on commodity rates, which optimizes the model for the given commodity rates, and for re-scaled commodity rates with scale decided by the user. In either case, inputs are taken from four CSV files, each detailing a different portion of the data required (commodities, production plants, distribution centers, and customer zones). The commodity rates CSV is parsed into a one-dimensional array for simplicity, and the remaining three are parsed into corresponding data-types that are defined within the program. The Python library Pandas is used for all data parsing and wrangling. Optimization is done by Pyomo using the 'highs' solver for the single optimization, and 'appsi_highs' is used for the sensitivity analysis, as it allows for mutability of commodity rates.
-NOT FINISHEDWWWWWWWWWWWWWWWWWWWWWW
+There are two components to this project: optimization of the model using the given data, and a parametric analysis on commodity rates, which optimizes the model for the given commodity rates, and for re-scaled commodity rates with scale decided by the user. In either case, inputs are taken from four CSV files, each detailing a different portion of the data required (commodities, production plants, distribution centers, and customer zones). The commodity rates CSV is parsed into a one-dimensional array for simplicity, and the remaining three are parsed into corresponding data-types that are defined in `common/datatypes.py`. The Python library Pandas is used for all data parsing and wrangling. Optimization is done using Pyomo and the 'highs' solver for the single optimization, and 'appsi_highs' for the sensitivity analysis, as it allows for mutability of commodity rates.
 
 ## Model and constraints
 
@@ -110,7 +98,7 @@ We'll now give an explicit mathematical formulation for the problem: variables, 
 | $M_{d}$ | Parameter | Maximum throughput of distribution center d |
 | $F_{d}$ | Parameter | Fixed cost of operating distribution center d |
 | $R_{d}$ | Parameter | Variable cost of distribution center d (per unit throughout charge) |
-| $K_{cpdz}$ | Parameter (Calculated) | Cost of producing c, then shipping from p to d, d to z per unit per km |
+| $K_{cpdz}$ | Parameter (Calculated) | Per unit cost of producing c and shipping from p to d, then d to z |
 
 ### Constraints
 
@@ -163,7 +151,7 @@ This covers production and shipping costs, plus each open distribution center's 
 - Each customer zone is served by only one distribution center
 - We do not model any transportation capacity limits
 - Per unit transportation cost are generalized to "commodity rates"
-- Distances are calculated using haversine distance, and do not account for actual roads/routing
+- Distances are approximated using haversine distance and CIRCUITY, and do not account for actual, real-world routing.
 
 # Acknowledgements
 - Model formulated in AIMMS Optimization Modeling [AIMMS](https://documentation.aimms.com/_downloads/AIMMS_modeling.pdf)
