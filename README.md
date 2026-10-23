@@ -5,7 +5,83 @@ The CFLP is an optimization problem involving distribution center design. Given 
 
 ## Requirements and Setup
 
-**Requirements**
+### Requirements
+
+- Python 3.12 or newer (developed and tested on Python 3.14)
+- The packages listed in `requirements.txt`:
+  - [Pyomo](https://www.pyomo.org/): builds the optimization model
+  - [HiGHS](https://highs.dev/) (via `highspy`): solves the mixed-integer program
+  - [pandas](https://pandas.pydata.org/): reads CSVs and wrangles data
+
+### Installation
+
+### Requirements
+- Python 3.12 or newer (tested on Python 3.14)
+- Dependencies are declared in `pyproject.toml` and installed automatically:
+  Pyomo, HiGHS (`highspy`), pandas
+
+### Installation
+1. Clone the repository and enter it:
+```
+   git clone https://github.com/<your-username>/<your-repo>.git
+   cd <your-repo>
+```
+2. Create and activate a virtual environment:
+```
+   py -m venv .venv                 # Windows (or: python -m venv .venv)
+   .venv\Scripts\activate           # Windows
+   source .venv/bin/activate        # macOS / Linux
+```
+   On Windows, if activation is blocked, run
+   `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once.
+3. Install the project in editable mode:
+```
+   pip install -e .
+```
+4. Verify the install:
+```
+   python -c "import pyomo.environ as pyo, pandas, common.datatypes; print(pyo.SolverFactory('appsi_highs').available())"
+```
+   This should print `True`.
+
+### Project layout
+```
+common/              shared data classes and distance functions
+CFLP_Single/         single solve
+CFLP_Sensitivity/    parametric analysis on commodity rates
+CSVs/                input data
+Output/              results
+```
+   This should print `True`.
+
+### Input data
+
+All inputs are CSV files in the `CSVs/` folder:
+
+| File | Contents |
+|---|---|
+| `distribution_centers.csv` | min/max throughput, fixed cost, variable cost, latitude, longitude for each distribution center |
+| `customer_zones.csv` | demand for each commodity, latitude, longitude |
+| `production_plants.csv` | supply of each commodity, latitude, longitude |
+| `commodity_rates.csv` | transport cost per unit per km for each commodity |
+
+Row order matters: row *i* in each file is entity *i* in the model, and commodity columns must appear in the same order in all three files. To use your own data, replace these files with the same column layout.
+
+### Running
+
+- Single solve: `python main.py`
+- Parametric analysis on commodity rates: `python Parametric_Analysis.py`
+
+Output is written to the `Output/` folder:
+- `main.py`  writes to `Output/main_out.txt`
+- `Parametric_Analysis.py` writes to `Output/parametric_out.txt`
+
+### Configuration
+
+Distance settings are constants near the top of the code:
+
+- `CIRCUITY`: multiplier applied to straight-line distance to approximate road distance
+- `EARTH_RADIUS`: 6371 km (haversine distance)
 
 
 ## Repository Format
@@ -34,7 +110,7 @@ We'll now give an explicit mathematical formulation for the problem: variables, 
 | $M_{d}$ | Parameter | Maximum throughput of distribution center d |
 | $F_{d}$ | Parameter | Fixed cost of operating distribution center d |
 | $R_{d}$ | Parameter | Variable cost of distribution center d (per unit throughout charge) |
-| $K_{cpdz}$ | Parameter (Calculated) | Per unit cost of producing c, then shipping from p to d, d to z |
+| $K_{cpdz}$ | Parameter (Calculated) | Cost of producing c, then shipping from p to d, d to z per unit per km |
 
 ### Constraints
 
@@ -82,6 +158,7 @@ This covers production and shipping costs, plus each open distribution center's 
 
 ### Assumptions and Limitations
 
+- Commodity amounts are assumed to be integers (for rounding simplicity)
 - Demand is deterministic
 - Each customer zone is served by only one distribution center
 - We do not model any transportation capacity limits
@@ -89,4 +166,4 @@ This covers production and shipping costs, plus each open distribution center's 
 - Distances are calculated using haversine distance, and do not account for actual roads/routing
 
 # Acknowledgements
-- Model from AIMMS Optimization Modeling [AIMMS](https://documentation.aimms.com/_downloads/AIMMS_modeling.pdf)
+- Model formulated in AIMMS Optimization Modeling [AIMMS](https://documentation.aimms.com/_downloads/AIMMS_modeling.pdf)
